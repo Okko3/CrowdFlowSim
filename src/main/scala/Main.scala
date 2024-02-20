@@ -73,10 +73,8 @@ object Main extends JFXApp3:
     )
 
 
-    Simulation.tick()
-    Simulation.tick()
-    Simulation.tick()
-    Simulation.tick()
+    Simulation.runSimulation()
+
 
   end start
 
