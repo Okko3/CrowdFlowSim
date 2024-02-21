@@ -19,20 +19,18 @@ class Vector2(var x: Double, var y: Double):
 
   def dotProduct(other: Vector2): Double = this.x * other.x + this.y * other.y
 
-  def rotateBy(angle: Double): Vector2 =
-    val cosAngle = Math.cos(angle)
-    val sinAngle = Math.sin(angle)
-    Vector2(x * cosAngle - y * sinAngle, x * sinAngle + y * cosAngle)
-
   def angleWith(that: Vector2): Double =
     val dot = this.dotProduct(that)
     val magnitudeProduct = this.magditude * that.magditude
-    acos(dot / magnitudeProduct)
+    val angle = acos(dot / magnitudeProduct)
+    if angle > Pi then angle - 2 * Pi else angle
 
-  def rotateTowards(target: Vector2, maxAngle: Double): Vector2 =
-    val angleBetween = this.angleWith(target)
-    val actualRotation = if angleBetween <= maxAngle then angleBetween else maxAngle
-    this.rotateBy(actualRotation)
+  def setMagnitude(magnitude: Double): Vector2 =
+    if this.magditude < magnitude then this
+    else
+      val currentMagnitude = this.magditude
+      this.multiply(magnitude / currentMagnitude)
+
 
 
 

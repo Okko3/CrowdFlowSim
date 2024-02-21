@@ -7,7 +7,7 @@ import scalafx.scene.shape.{Circle, Rectangle}
 
 object Main extends JFXApp3:
 
-  val wallwidth = 20
+  val wallwidth = 40
 
 
   def start() =
@@ -58,12 +58,9 @@ object Main extends JFXApp3:
       height = stage.height.value/2 - Simulation.room.doorHeigth/2
       fill = Grey
 
-
-
-
-
     root.children ++= Seq(leftWall, topWall, bottomWall, door, rightWallTop, rightWallBottom)
 
+    
     Simulation.room.getCharacters.foreach(character =>
       val circle = new Circle
       circle.centerX  = character.position.x + wallwidth
@@ -76,7 +73,6 @@ object Main extends JFXApp3:
 
 
     Simulation.runSimulation()
-
 
   end start
 

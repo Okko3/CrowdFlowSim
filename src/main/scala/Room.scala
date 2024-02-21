@@ -8,15 +8,15 @@ class Room(val roomWidth: Int, val RoomHeigth: Int, val doorHeigth: Int, val cha
 
   def getCharacters = characters
 
-
-  def isFree(point: Vector2) =
-    if this.characterBuffer.isEmpty then true else
-      this.characterBuffer.forall(character =>
-      point.getDirection(character.position).magditude > character.radius * 2 )
-
   def createCharacters: Vector[Character] =
     var iterations = 0
     var addedCount = 0
+    var characterBuffer = Buffer[Character]()
+    
+    def isFree(point: Vector2) =
+      if this.characterBuffer.isEmpty then true else
+        this.characterBuffer.forall(character =>
+        point.getDirection(character.position).magditude > character.radius * 2 )
 
     while(100 > iterations && characterCount > addedCount) do
       val randomPos = Vector2(Random.between(20, this.roomWidth - 20), Random.between(20, RoomHeigth - 20))
@@ -28,12 +28,6 @@ class Room(val roomWidth: Int, val RoomHeigth: Int, val doorHeigth: Int, val cha
       iterations += 1
 
     characterBuffer.toVector
-
-
-
-
-
-
 
 
     //Vector(new Character(Vector2(0, 0), this), new Character(Vector2(200, 100), this), new Character(Vector2(100, 800), this))
