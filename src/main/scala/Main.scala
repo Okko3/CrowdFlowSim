@@ -15,7 +15,7 @@ object Main extends JFXApp3:
     stage = new JFXApp3.PrimaryStage:
       title = "CrowdFlowSim"
       width = Simulation.room.roomWidth +  2 * wallwidth
-      height = Simulation.room.RoomHeigth +2 * wallwidth
+      height = Simulation.room.RoomHeigth + 2 * wallwidth
 
     val root = Pane()
 
@@ -60,14 +60,16 @@ object Main extends JFXApp3:
 
 
 
+
+
     root.children ++= Seq(leftWall, topWall, bottomWall, door, rightWallTop, rightWallBottom)
 
     Simulation.room.getCharacters.foreach(character =>
       val circle = new Circle
-      circle.centerX  = character.position.x
-      circle.centerY = character.position.y
+      circle.centerX  = character.position.x + wallwidth
+      circle.centerY = character.position.y + wallwidth
       circle.radius = character.radius
-      circle.fill = Red
+      circle.fill = Blue
       Simulation.characterCircleMap.put(character, circle)
       root.children.add(circle)
     )

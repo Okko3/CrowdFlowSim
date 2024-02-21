@@ -7,13 +7,13 @@ import scala.concurrent.duration.*
 
 
 object Simulation:
-  val simulationSpeed = 60
-  val room: Room = this.createRoom(Vector(1200, 1200, 300))
+  val simulationSpeed = 10
+  val room: Room = this.createRoom(Vector(700, 700, 100 , 40))
   val characterCircleMap = collection.mutable.Map[Character, Circle]()
 
 
   def createRoom(data: Vector[Int]): Room =
-    Room(data(0), data(1), data(2))
+    Room(data(0), data(1), data(2), data(3))
 
   def runSimulation() =
     val runner = Future {
@@ -22,12 +22,12 @@ object Simulation:
         Thread.sleep(1000/simulationSpeed) }
 
 
-
+  
   def tick(): Unit =
     room.getCharacters.foreach(character =>
       character.update
-      characterCircleMap(character).centerX = character.position.x
-      characterCircleMap(character).centerY = character.position.y
+      characterCircleMap(character).centerX = character.position.x + 20
+      characterCircleMap(character).centerY = character.position.y + 20
     )
 
 
@@ -36,8 +36,8 @@ object Simulation:
     val futures = room.getCharacters.map( character =>
       val characterFuture = Future {
         character.update
-        characterCircleMap(character).centerX = character.position.x
-        characterCircleMap(character).centerY = character.position.y
+        characterCircleMap(character).centerX = character.position.x + 20
+        characterCircleMap(character).centerY = character.position.y + 20
       }
       )
 
