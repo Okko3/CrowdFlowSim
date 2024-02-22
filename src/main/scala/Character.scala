@@ -47,7 +47,12 @@ class Character(var position: Vector2, room: Room):
     var futurepos = this.position.add(velocity.multiply(multi))
     val bool = this.room.getCharacters.exists(character =>
       val otherfuturepos = character.position.add(velocity.multiply(multi))
-      character != this && otherfuturepos.getDirection(futurepos).magditude.abs < this.radius * 2)
+      val insame = character != this && otherfuturepos.getDirection(futurepos).magditude.abs < this.radius * 2.1
+      val priority3 = this.seekDoorDirection().magditude.abs > character.seekDoorDirection().magditude.abs
+      val priority2 = this.position.getDirection(Vector2(room.roomWidth + 2 * radius, room.RoomHeigth/2)).magditude.abs > character.position.getDirection(Vector2(room.roomWidth + radius, room.RoomHeigth/2)).magditude.abs
+      val priority = otherfuturepos.getDirection(Vector2(room.roomWidth, room.RoomHeigth/2)).magditude.abs > futurepos.getDirection(Vector2(room.roomWidth, room.RoomHeigth/2)).magditude.abs
+      priority2 && insame
+    )
     bool
 
 
