@@ -9,18 +9,37 @@ class Character(var position: Vector2, room: Room):
   private val maxAcceleration: Double = 0.35
 
   def update =
-    this.updatePosition()
     this.updateVelocity()
     this.updateAcceleration()
+    this.updatePosition()
     if this.position.x > this.room.roomWidth + radius then
       inRoom = false
       this.position = Vector2(10000, 10000)
 
   def updatePosition() = position = position.add(velocity)
 
+  def braking = this.acceleration.dotProduct(seekDoorDirection()) < -0.8
+
   def updateVelocity() =
-    if velocity.angleWith(acceleration).abs > 0.03 then velocity = velocity.add(acceleration).setMagnitude(maxVelocity * 0.9)
+    if braking && velocity.magditude.abs < 0.3 then velocity = Vector2(0,0)
+    else if velocity.angleWith(acceleration).abs > 0.03 then velocity = velocity.add(acceleration).setMagnitude(maxVelocity * 0.5)
     else if velocity.magditude < maxVelocity then velocity = velocity.add(acceleration).setMagnitude(maxVelocity)
+
+
+
+
+
+    /*
+    val result: Vector2 = if velocity.angleWith(acceleration).abs > 0.03 then velocity.add(acceleration).setMagnitude(maxVelocity * 0.5)
+    else if velocity.magditude < maxVelocity then velocity.add(acceleration).setMagnitude(maxVelocity)
+    else if checkFuture(30) then Vector2(0, 0)
+    else velocity
+    if position.add(result).getDirection(doorpos()).magditude.abs < seekDoorDirection().magditude.abs then velocity = result else velocity = Vector2(0,0)
+
+
+    //!braking then velocity = result else velocity = velocity
+    */
+
 
   def updateAcceleration() =
     acceleration = seekDoorDirection().setMagnitude(maxAcceleration).multiply(brakeAmount())
@@ -51,14 +70,13 @@ class Character(var position: Vector2, room: Room):
     val accdir = acceleration.dotProduct(seekDoorDirection().normalize().multiply(100))
     var braking: Double = 1
 
-    if this.checkFuture(25) && veldir > 0.01 then braking = -2
-    else if this.checkFuture(30) && veldir > 0.01 then braking = -1.7
-    else if this.checkFuture(40) && veldir > 0.01 then braking = -1.5
-    else if this.checkFuture(50) && veldir > 0.01 then braking = -1
-    else if this.checkFuture(60) && veldir > 0.1 then braking = -0.8
-    else if this.checkFuture(80) && veldir > 0.1 then braking = -0.6
-    else if this.checkFuture(100) && veldir > 0.1 then braking = -0.4
-    else if this.checkFuture(120) && veldir > 1 then braking = -0.1
+    if this.checkFuture(25) && veldir > 0 then braking = -2
+    else if this.checkFuture(30) && veldir > 0 then braking = -1.7
+    else if this.checkFuture(40) && veldir > 0 then braking = -1.5
+    else if this.checkFuture(50) && veldir > 0 then braking = -1
+    else if this.checkFuture(60) && veldir > 0 then braking = -0.8
+    else if this.checkFuture(80) && veldir > 0 then braking = -0.4
+
 
 
     braking
@@ -97,9 +115,9 @@ class Character(var position: Vector2, room: Room):
     var futurepos = this.position.add(this.velocity.multiply(multi))
     val bool = this.room.getCharacters.exists(character =>
       val otherfuturepos = character.position.add(character.velocity.multiply(multi))
-      val insame = character != this && otherfuturepos.getDirection(futurepos).magditude.abs < this.radius * 2.1
-      val priority = this.position.getDirection(Vector2(room.roomWidth + 2 * radius, room.RoomHeigth/2)).magditude.abs > character.position.getDirection(Vector2(room.roomWidth + radius, room.RoomHeigth/2)).magditude.abs
-      val priority2 = this.position.getDirection(doorpos()).magditude.abs > character.position.getDirection(character.doorpos()).magditude.abs
+      val insame = character != this && otherfuturepos.getDirection(futurepos).magditude.abs < this.radius * 2.3
+      val priority = this.position.getDirection(Vector2(room.roomWidth + radius, room.RoomHeigth/2)).magditude.abs * 0.99 >= character.position.getDirection(Vector2(room.roomWidth + radius, room.RoomHeigth/2)).magditude.abs
+      val priority2 = this.position.getDirection(doorpos()).magditude.abs * 1.1 > character.position.getDirection(character.doorpos()).magditude.abs
 
       priority && insame
     )

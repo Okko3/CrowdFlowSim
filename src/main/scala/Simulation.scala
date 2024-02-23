@@ -8,7 +8,7 @@ import scala.concurrent.duration.*
 
 object Simulation:
   val simulationSpeed = 50
-  val room: Room = this.createRoom(Vector(500, 1200, 60 , 40))
+  val room: Room = this.createRoom(Vector(500, 1200, 70 , 40))
   val characterCircleMap = collection.mutable.Map[Character, Circle]()
 
 
