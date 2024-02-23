@@ -1,4 +1,6 @@
-import Main.stage
+package crowdFlowSim
+
+import crowdFlowSim.Main.stage
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.scene.layout.Pane
@@ -9,13 +11,12 @@ object Main extends JFXApp3:
 
   val wallwidth = 40
 
-
   def start() =
 
     stage = new JFXApp3.PrimaryStage:
       title = "CrowdFlowSim"
-      width = Simulation.room.roomWidth +  2 * wallwidth
-      height = Simulation.room.RoomHeigth + 2 * wallwidth
+      width = Simulation.room.width +  2 * wallwidth
+      height = Simulation.room.heigth + 2 * wallwidth
 
     val root = Pane()
 
@@ -40,28 +41,27 @@ object Main extends JFXApp3:
 
     val door = new Rectangle:
       x = stage.width.value - wallwidth
-      y = (stage.height.value) / 2 - Simulation.room.doorHeigth/2
+      y = (stage.height.value) / 2 - Simulation.room.doorSize/2
       width = wallwidth
-      height = Simulation.room.doorHeigth
+      height = Simulation.room.doorSize
       fill = Yellow
 
     val rightWallTop = new Rectangle:
       x = stage.width.value - wallwidth
       width = wallwidth
-      height = stage.height.value/2 - Simulation.room.doorHeigth/2
+      height = stage.height.value/2 - Simulation.room.doorSize/2
       fill = Grey
 
     val rightWallBottom = new Rectangle:
       x = stage.width.value - wallwidth
-      y = (stage.height.value) / 2 + Simulation.room.doorHeigth/2
+      y = (stage.height.value) / 2 + Simulation.room.doorSize/2
       width = wallwidth
-      height = stage.height.value/2 - Simulation.room.doorHeigth/2
+      height = stage.height.value/2 - Simulation.room.doorSize/2
       fill = Grey
 
     root.children ++= Seq(leftWall, topWall, bottomWall, door, rightWallTop, rightWallBottom)
 
-    
-    Simulation.room.getCharacters.foreach(character =>
+    Simulation.room.characters.foreach(character =>
       val circle = new Circle
       circle.centerX  = character.position.x + wallwidth
       circle.centerY = character.position.y + wallwidth
@@ -71,10 +71,8 @@ object Main extends JFXApp3:
       root.children.add(circle)
     )
 
-
     Simulation.runSimulation()
 
   end start
 
 end Main
-
