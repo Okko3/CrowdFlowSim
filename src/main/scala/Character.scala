@@ -2,7 +2,7 @@ import scala.math.*
 
 class Character(var position: Vector2, room: Room):
   val radius = 20
-  private var inRoom: Boolean = true
+  var inRoom: Boolean = true
   private var velocity: Vector2 = Vector2(0,0)
   private var acceleration: Vector2 = Vector2(0,0)
   private val maxVelocity: Double = 2
@@ -12,138 +12,50 @@ class Character(var position: Vector2, room: Room):
     this.updateVelocity()
     this.updateAcceleration()
     this.updatePosition()
-    if this.position.x > this.room.roomWidth + radius then
+    if this.position.x > this.room.width + radius then
       inRoom = false
       this.position = Vector2(10000, 10000)
 
   def updatePosition() = position = position.add(velocity)
 
-  def braking = this.acceleration.dotProduct(seekDoorDirection()) < -0.8
-
   def updateVelocity() =
-    if braking && velocity.magditude.abs < 0.3 then velocity = Vector2(0,0)
-    else if velocity.angleWith(acceleration).abs > 0.03 then velocity = velocity.add(acceleration).setMagnitude(maxVelocity * 0.5)
-    else if velocity.magditude < maxVelocity then velocity = velocity.add(acceleration).setMagnitude(maxVelocity)
+    if this.acceleration.dotProduct(seekDoorDirection()) < -0.8 && velocity.magnitude.abs < 0.4 then velocity = Vector2(0,0)
+    else if velocity.angleWith(acceleration).abs > 0.02 then velocity = velocity.add(acceleration).setMagnitude(maxVelocity * 0.6)
+    else if velocity.magnitude < maxVelocity then velocity = velocity.add(acceleration).setMagnitude(maxVelocity)
 
-
-
-
-
-    /*
-    val result: Vector2 = if velocity.angleWith(acceleration).abs > 0.03 then velocity.add(acceleration).setMagnitude(maxVelocity * 0.5)
-    else if velocity.magditude < maxVelocity then velocity.add(acceleration).setMagnitude(maxVelocity)
-    else if checkFuture(30) then Vector2(0, 0)
-    else velocity
-    if position.add(result).getDirection(doorpos()).magditude.abs < seekDoorDirection().magditude.abs then velocity = result else velocity = Vector2(0,0)
-
-
-    //!braking then velocity = result else velocity = velocity
-    */
-
-
-  def updateAcceleration() =
-    acceleration = seekDoorDirection().setMagnitude(maxAcceleration).multiply(brakeAmount())
-
-  def getInRoom = this.inRoom
-
-
-  def doorpos() =
-    val doorStartY: Double = this.room.RoomHeigth/2 - this.room.doorHeigth/2 + this.radius
-    val doorEndY: Double = this.room.RoomHeigth/2 + this.room.doorHeigth/2 - this.radius
-
-    if this.position.y > doorStartY && this.position.y < doorEndY then Vector2(this.room.roomWidth + this.radius, position.y)
-    else if this.position.y < doorStartY then Vector2(this.room.roomWidth - this.radius, doorStartY)
-    else Vector2(this.room.roomWidth - this.radius, doorEndY)
-
+  def updateAcceleration() = acceleration = seekDoorDirection().setMagnitude(maxAcceleration).multiply(brakeAmount())
 
 
   def seekDoorDirection(): Vector2 =
-    val doorStartY: Double = this.room.RoomHeigth/2 - this.room.doorHeigth/2 + this.radius
-    val doorEndY: Double = this.room.RoomHeigth/2 + this.room.doorHeigth/2 - this.radius
+    val doorStartY: Double = this.room.heigth/2 - this.room.doorSize/2 + this.radius
+    val doorEndY: Double = this.room.heigth/2 + this.room.doorSize/2 - this.radius
 
-    if this.position.y > doorStartY && this.position.y < doorEndY then this.position.getDirection(Vector2(this.room.roomWidth + this.radius, position.y))
-    else if this.position.y < doorStartY then this.position.getDirection(Vector2(this.room.roomWidth - this.radius, doorStartY))
-    else this.position.getDirection(Vector2(this.room.roomWidth - this.radius, doorEndY))
+    if this.position.y > doorStartY && this.position.y < doorEndY then this.position.getDirection(Vector2(this.room.width + this.radius, position.y))
+    else if this.position.y < doorStartY then this.position.getDirection(Vector2(this.room.width - this.radius, doorStartY))
+    else this.position.getDirection(Vector2(this.room.width - this.radius, doorEndY))
 
   def brakeAmount() =
-    val veldir = velocity.dotProduct(seekDoorDirection().normalize().multiply(100))
-    val accdir = acceleration.dotProduct(seekDoorDirection().normalize().multiply(100))
     var braking: Double = 1
 
-    if this.checkFuture(25) && veldir > 0 then braking = -2
-    else if this.checkFuture(30) && veldir > 0 then braking = -1.7
-    else if this.checkFuture(40) && veldir > 0 then braking = -1.5
-    else if this.checkFuture(50) && veldir > 0 then braking = -1
-    else if this.checkFuture(60) && veldir > 0 then braking = -0.8
-    else if this.checkFuture(80) && veldir > 0 then braking = -0.4
-
-
+    if this.checkFuture(25) then braking = -2.5
+    else if this.checkFuture(30) then braking = -1.7
+    else if this.checkFuture(40) then braking = -1.3
+    else if this.checkFuture(50) then braking = -0.7
+    else if this.checkFuture(60) then braking = -0.2
+    else if this.checkFuture(80) then braking = -0.1
 
     braking
 
 
-
-
-
-
-
-
-
-
-    /*
-    if this.velocity.magditude == 0 then 1 else
-
-
-
-
-
-
-
-      var braking: Double = 1
-      if this.checkFuture(25) && dir > 0.01 then braking = -1.5
-      if this.checkFuture(30) && dir > 0.01 then braking = -1
-      else if this.checkFuture(40) && dir > 0 then braking = -0.6
-      else if this.checkFuture(50) && dir > 0 then braking = -0.2
-
-      else if this.checkFuture(60) && dir > 1 then braking = 0
-      else if this.checkFuture(70) && dir > 1.5  then braking = 0.3
-      else if this.checkFuture(80) && dir > 1 then braking = 0.7
-      braking */
-
-
   def checkFuture(multi: Int) =
     var futurepos = this.position.add(this.velocity.multiply(multi))
-    val bool = this.room.getCharacters.exists(character =>
-      val otherfuturepos = character.position.add(character.velocity.multiply(multi))
-      val insame = character != this && otherfuturepos.getDirection(futurepos).magditude.abs < this.radius * 2.3
-      val priority = this.position.getDirection(Vector2(room.roomWidth + radius, room.RoomHeigth/2)).magditude.abs * 0.99 >= character.position.getDirection(Vector2(room.roomWidth + radius, room.RoomHeigth/2)).magditude.abs
-      val priority2 = this.position.getDirection(doorpos()).magditude.abs * 1.1 > character.position.getDirection(character.doorpos()).magditude.abs
+    this.room.characters.exists(other =>
+      val otherfuturepos = other.position.add(other.velocity.multiply(multi))
+      val insame = other != this && otherfuturepos.distance(futurepos) < this.radius * 2.3
+      val priority = this.position.distance(Vector2(room.width + radius, room.heigth/2)) * 0.99 >= other.position.distance(Vector2(room.width + radius, room.heigth/2))
 
       priority && insame
     )
-    bool
-
-
-
-
-    //otherfuturepos != futurepos
-    /*this.room.getCharacters.map(character => character.position.add(velocity.multiply(multi))).exists(pos =>
-      futurepos.getDirection(pos).magditude.abs < this.radius * 2 ) */
-
-
-
-
-  def avoidWallDirection() =
-    val doorStartY: Double = this.room.RoomHeigth/2 - this.room.doorHeigth/2 + this.radius
-    val doorEndY: Double = this.room.RoomHeigth/2 + this.room.doorHeigth/2 - this.radius
-
-
-
-/*
-    if this.position.y < doorStartY then
-
-    else   */
-
 
 
 

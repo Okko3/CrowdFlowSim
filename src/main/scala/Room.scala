@@ -1,11 +1,9 @@
 import scala.util.Random
 import scala.collection.mutable.Buffer
 
-class Room(val roomWidth: Int, val RoomHeigth: Int, val doorHeigth: Int, val characterCount: Int):
+class Room(val width: Int, val heigth: Int, val doorSize: Int, val characterCount: Int):
 
-  private val characters: Vector[Character] = this.createCharacters
-
-  def getCharacters = characters
+  val characters: Vector[Character] = this.createCharacters
 
   def createCharacters: Vector[Character] =
     var iterations = 0
@@ -15,10 +13,10 @@ class Room(val roomWidth: Int, val RoomHeigth: Int, val doorHeigth: Int, val cha
     def isFree(point: Vector2) =
       if characterBuffer.isEmpty then true else
         characterBuffer.forall(character =>
-        point.getDirection(character.position).magditude.abs > character.radius * 2.2)
+        point.distance(character.position) > character.radius * 2.2)
 
-    while(300 > iterations && characterCount > addedCount) do
-      val randomPos = Vector2(Random.between(22, this.roomWidth - 22), Random.between(22, RoomHeigth -22 ))
+    while(10000 > iterations && characterCount > addedCount) do
+      val randomPos = Vector2(Random.between(22, this.width - 22), Random.between(22, this.heigth -22 ))
 
       if isFree(randomPos) then
         characterBuffer += new Character(randomPos, this)
@@ -27,13 +25,6 @@ class Room(val roomWidth: Int, val RoomHeigth: Int, val doorHeigth: Int, val cha
       iterations += 1
 
     characterBuffer.toVector
-
-
-    //Vector(new Character(Vector2(0, 0), this), new Character(Vector2(200, 100), this), new Character(Vector2(100, 800), this))
-
-
-
-
 
 
 

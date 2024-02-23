@@ -2,18 +2,22 @@ import scalafx.scene.shape.{Circle}
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.concurrent.*
-import scala.concurrent.duration.*
-
+import scala.util.Using
+import scala.io.Source
 
 object Simulation:
-  val simulationSpeed = 50
-  val room: Room = this.createRoom(Vector(500, 1200, 70 , 40))
+  
+  var simulationSpeed = 20
+  val room: Room = readFile().get
   val characterCircleMap = collection.mutable.Map[Character, Circle]()
 
-
-  def createRoom(data: Vector[Int]): Room =
-    Room(data(0), data(1), data(2), data(3))
+  def readFile() =
+    Using( Source.fromFile("data.txt") )( source =>
+        val lines = source.getLines
+        val params = lines.toVector(0).split(",")
+        var simulationSpeed = params(4).toInt
+        Room(params(0).toInt, params(1).toInt, params(2).toInt , params(3).toInt)
+    )
 
   def runSimulation() =
     val runner = Future {
@@ -22,14 +26,11 @@ object Simulation:
         Thread.sleep(1000/simulationSpeed) }
 
 
-
   def tick(): Unit =
-    room.getCharacters.foreach(character =>
-      if !character.getInRoom then
+    room.characters.foreach(character =>
+      if !character.inRoom then
         characterCircleMap(character).centerX = 10000
         characterCircleMap(character).centerY = 10000
-
-        //characterCircleMap(character).parent.value.remove( characterCircleMap(character))
       else
         character.update
         characterCircleMap(character).centerX = character.position.x + 40
@@ -37,9 +38,8 @@ object Simulation:
     )
 
 
-
   def tick2(): Unit =
-    val futures = room.getCharacters.map( character =>
+    val futures = room.characters.map( character =>
       val characterFuture = Future {
         character.update
         characterCircleMap(character).centerX = character.position.x + 40

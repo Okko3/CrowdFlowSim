@@ -6,11 +6,13 @@ class Vector2(var x: Double, var y: Double):
 
   def add(other: Vector2) = Vector2(x + other.x, y + other.y)
 
-  def magditude: Double = sqrt(x * x + y * y)
+  def magnitude: Double = sqrt(x * x + y * y)
 
-  def normalize(): Vector2 = Vector2(0.01*x/magditude, 0.01*y/magditude)
+  def normalize(): Vector2 = Vector2(0.01*x/magnitude, 0.01*y/magnitude)
 
   def getDirection(destination: Vector2) = Vector2(destination.x - x, destination.y - y)
+
+  def distance(destination: Vector2) = this.getDirection(destination).magnitude
 
   def subtract(other: Vector2) = Vector2(this.x - other.x, this.y - other.y)
 
@@ -19,16 +21,15 @@ class Vector2(var x: Double, var y: Double):
 
   def dotProduct(other: Vector2): Double = this.x * other.x + this.y * other.y
 
-  def angleWith(that: Vector2): Double =
-    val dot = this.dotProduct(that)
-    val magnitudeProduct = this.magditude * that.magditude
-    val angle = acos(dot / magnitudeProduct)
+  def angleWith(other: Vector2): Double =
+    val magnitudeProduct = this.magnitude * other.magnitude
+    val angle = acos(this.dotProduct(other) / magnitudeProduct)
     if angle > Pi then angle - 2 * Pi else angle
 
   def setMagnitude(magnitude: Double): Vector2 =
-    if this.magditude < magnitude then this
+    if this.magnitude < magnitude then this
     else
-      val currentMagnitude = this.magditude
+      val currentMagnitude = this.magnitude
       this.multiply(magnitude / currentMagnitude)
 
 
