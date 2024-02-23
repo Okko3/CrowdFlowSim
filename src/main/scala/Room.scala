@@ -3,7 +3,6 @@ import scala.collection.mutable.Buffer
 
 class Room(val roomWidth: Int, val RoomHeigth: Int, val doorHeigth: Int, val characterCount: Int):
 
-  var characterBuffer = Buffer[Character]()
   private val characters: Vector[Character] = this.createCharacters
 
   def getCharacters = characters
@@ -14,12 +13,12 @@ class Room(val roomWidth: Int, val RoomHeigth: Int, val doorHeigth: Int, val cha
     var characterBuffer = Buffer[Character]()
     
     def isFree(point: Vector2) =
-      if this.characterBuffer.isEmpty then true else
-        this.characterBuffer.forall(character =>
-        point.getDirection(character.position).magditude > character.radius * 2 )
+      if characterBuffer.isEmpty then true else
+        characterBuffer.forall(character =>
+        point.getDirection(character.position).magditude.abs > character.radius * 2.2)
 
-    while(100 > iterations && characterCount > addedCount) do
-      val randomPos = Vector2(Random.between(20, this.roomWidth - 20), Random.between(20, RoomHeigth - 20))
+    while(300 > iterations && characterCount > addedCount) do
+      val randomPos = Vector2(Random.between(22, this.roomWidth - 22), Random.between(22, RoomHeigth -22 ))
 
       if isFree(randomPos) then
         characterBuffer += new Character(randomPos, this)
