@@ -41,6 +41,7 @@ class Character(var position: Vector2, room: Room):
     if this.position.y < this.room.heigth/2 then Vector2(0,1)
     else Vector2(0,-1)
 
+
   def shouldEvade =
      val evadePos = this.position.add(evadeDirection).add(evadeDirection.multiply(45))
      val centreSpace = this.position.y < this.room.heigth/2 -10 || this.position.y > this.room.heigth/2 + 10
