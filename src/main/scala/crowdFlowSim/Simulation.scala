@@ -25,7 +25,7 @@ object Simulation:
   def runSimulation() =
     val runner = Future {
       while (true) do
-        tick()
+        tick3()
         Thread.sleep(1000/simulationSpeed) }
 
   def tick(): Unit =
@@ -45,8 +45,21 @@ object Simulation:
         character.update
         characterCircleMap(character).centerX = character.position.x + 40
         characterCircleMap(character).centerY = character.position.y + 40
+      } )
+
+  def tick3(): Unit = {
+    val groupedCharacters = room.characters.grouped((room.characters.length + 3) / 4).toList
+
+    val futures = groupedCharacters.map { group =>
+      Future {
+        group.foreach { character =>
+          character.update
+          characterCircleMap(character).centerX = character.position.x + 40
+          characterCircleMap(character).centerY = character.position.y + 40
+        }
       }
-      )
+    }
+  }
 
 
 
