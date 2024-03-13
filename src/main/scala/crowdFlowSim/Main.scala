@@ -6,6 +6,8 @@ import scalafx.scene.Scene
 import scalafx.scene.layout.Pane
 import scalafx.scene.paint.Color.*
 import scalafx.scene.shape.{Circle, Rectangle}
+import scalafx.Includes.jfxMouseEvent2sfx
+import scalafx.scene.input.InputIncludes.jfxMouseEvent2sfx
 
 object Main extends JFXApp3:
 
@@ -61,6 +63,8 @@ object Main extends JFXApp3:
 
     root.children ++= Seq(leftWall, topWall, bottomWall, door, rightWallTop, rightWallBottom)
 
+    Simulation.room.createCharacters
+
     Simulation.room.characters.foreach(character =>
       val circle = new Circle
       circle.centerX  = character.position.x + wallwidth
@@ -70,8 +74,22 @@ object Main extends JFXApp3:
       Simulation.characterCircleMap.put(character, circle)
       root.children.add(circle)
     )
-
     Simulation.runSimulation()
+
+    root.onMouseClicked = (event) => {
+      val newCharacter = new Character(Vector2(event.x - wallwidth, event.y - wallwidth), Simulation.room)
+      val circle = new Circle {
+        centerX = newCharacter.position.x + wallwidth
+        centerY = newCharacter.position.y + wallwidth
+        radius = newCharacter.radius
+        fill = Red
+      }
+      Simulation.room.characters += newCharacter
+      Simulation.characterCircleMap.put(newCharacter, circle)
+      root.children.add(circle)
+    }
+
+
 
   end start
 
