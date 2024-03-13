@@ -76,18 +76,35 @@ object Main extends JFXApp3:
     )
     Simulation.runSimulation()
 
+    import javafx.scene.input.MouseButton
+
     root.onMouseClicked = (event) => {
-      val newCharacter = new Character(Vector2(event.x - wallwidth, event.y - wallwidth), Simulation.room)
-      val circle = new Circle {
-        centerX = newCharacter.position.x + wallwidth
-        centerY = newCharacter.position.y + wallwidth
-        radius = newCharacter.radius
-        fill = Red
+      if (event.button == MouseButton.PRIMARY) {
+        val newCharacter = new Character(Vector2(event.x - wallwidth, event.y - wallwidth), Simulation.room)
+        val circle = new Circle {
+          centerX = newCharacter.position.x + wallwidth
+          centerY = newCharacter.position.y + wallwidth
+          radius = newCharacter.radius
+          fill = Red
+        }
+        Simulation.room.characters += newCharacter
+        Simulation.characterCircleMap.put(newCharacter, circle)
+        root.children.add(circle)
       }
-      Simulation.room.characters += newCharacter
-      Simulation.characterCircleMap.put(newCharacter, circle)
-      root.children.add(circle)
-    }
+      if (event.button == MouseButton.SECONDARY) then
+        val newCharacter = new Character(Vector2(event.x - wallwidth, event.y - wallwidth), Simulation.room)
+        newCharacter.radius = 28
+        newCharacter.isObstacle = true
+        val circle = new Circle {
+          centerX = newCharacter.position.x + wallwidth
+          centerY = newCharacter.position.y + wallwidth
+          radius = newCharacter.radius
+          fill = Grey
+        }
+        Simulation.room.characters += newCharacter
+        Simulation.characterCircleMap.put(newCharacter, circle)
+        root.children.add(circle)
+      }
 
 
 

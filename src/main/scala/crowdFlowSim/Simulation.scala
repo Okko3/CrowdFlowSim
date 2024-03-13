@@ -25,7 +25,7 @@ object Simulation:
   def runSimulation() =
     val runner = Future {
       while (true) do
-        tick3()
+        tick()
         Thread.sleep(1000/simulationSpeed) }
 
   def tick(): Unit =
@@ -33,7 +33,7 @@ object Simulation:
       if !character.inRoom then
         characterCircleMap(character).centerX = 10000
         characterCircleMap(character).centerY = 10000
-      else
+      else if !character.isObstacle then
         character.update
         characterCircleMap(character).centerX = character.position.x + 40
         characterCircleMap(character).centerY = character.position.y + 40

@@ -1,9 +1,9 @@
 package crowdFlowSim
-
 import scala.math.*
 
 class Character(var position: Vector2, room: Room):
-  val radius = 20
+  var radius = 20
+  var isObstacle = false
   var inRoom: Boolean = true
   var velocity: Vector2 = Vector2(0,0)
   var acceleration: Vector2 = Vector2(0,0)
