@@ -29,6 +29,11 @@ class Vector2(var x: Double, var y: Double):
       val currentMagnitude = this.magnitude
       this.multiply(magnitude / currentMagnitude)
 
+  override def equals(other: Any): Boolean = other match {
+    case that: Vector2 => this.x == that.x && this.y == that.y
+    case _             => false
+  }
+
 
 
 

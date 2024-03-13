@@ -5,10 +5,10 @@ import scala.math.*
 class Character(var position: Vector2, room: Room):
   val radius = 20
   var inRoom: Boolean = true
-  private var velocity: Vector2 = Vector2(0,0)
-  private var acceleration: Vector2 = Vector2(0,0)
-  private val maxVelocity: Double = 2
-  private val maxAcceleration: Double = 0.35
+  var velocity: Vector2 = Vector2(0,0)
+  var acceleration: Vector2 = Vector2(0,0)
+  val maxVelocity: Double = 2
+  val maxAcceleration: Double = 0.35
 
   def update =
     this.updateVelocity()
