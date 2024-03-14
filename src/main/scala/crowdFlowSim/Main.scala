@@ -93,7 +93,7 @@ object Main extends JFXApp3:
       }
       if (event.button == MouseButton.SECONDARY) then
         val newCharacter = new Character(Vector2(event.x - wallwidth, event.y - wallwidth), Simulation.room)
-        newCharacter.radius = 28
+        newCharacter.radius = 33
         newCharacter.isObstacle = true
         val circle = new Circle {
           centerX = newCharacter.position.x + wallwidth
