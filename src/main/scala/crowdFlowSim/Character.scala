@@ -23,12 +23,12 @@ class Character(var position: Vector2, room: Room):
 
   def updateVelocity() =
     if this.acceleration.dotProduct(seekDoorDirection(this.position)) < -0.8 && velocity.magnitude.abs < 0.4 then velocity = Vector2(0,0)
-    else if velocity.angleWith(acceleration).abs > 0.02 then velocity = velocity.add(acceleration).setMagnitude(maxVelocity * 0.7)
+    if velocity.angleWith(acceleration).abs > 0.02 then velocity = velocity.add(acceleration).setMagnitude(maxVelocity * 0.7)
     else if velocity.magnitude < maxVelocity then velocity = velocity.add(acceleration).setMagnitude(maxVelocity)
 
   def updateAcceleration() =
     val evadeDirection = shouldEvade3
-    if evadeDirection.magnitude != 0 then acceleration = evadeDirection.setMagnitude(maxAcceleration).multiply(brakeAmount(this.position, this.velocity))
+    if evadeDirection.magnitude != 0 then acceleration = evadeDirection.setMagnitude(maxAcceleration)
     //if shouldEvade then acceleration = evadeDirection.setMagnitude(maxAcceleration)
     else acceleration = seekDoorDirection(this.position).setMagnitude(maxAcceleration).multiply(brakeAmount(this.position, this.velocity))
 
@@ -66,22 +66,18 @@ class Character(var position: Vector2, room: Room):
 
 
   def shouldEvade3 =
-    val evadeDirs = List(Vector2(0,-3), Vector2(0,3))
+    val evadeDirs = List(Vector2(0,-6), Vector2(0,6))
     val best = mutable.Buffer[Double]()
     val freet = mutable.Buffer[Boolean]()
     evadeDirs.foreach(dir =>
       var evadePos = this.position.add(dir)
       best += brakeAmount((evadePos), seekDoorDirection(evadePos).setMagnitude(this.velocity.magnitude))
       freet += this.room.characters.exists(other =>
-        other != this && other.position.distance(evadePos) < this.radius + other.radius + 10)
+        other != this && other.position.distance(evadePos) > this.radius + other.radius + 5)
       )
-    val index = best.zipWithIndex.minBy(_._1)._2
-    if best.max > brakeAmount(this.position, this.velocity) + 0.1 && freet(index) then evadeDirs(index)
+    val index = best.zipWithIndex.maxBy(_._1)._2
+    if best.max > brakeAmount(this.position, this.velocity) && freet(index) then evadeDirs(index)
     else Vector2(0, 0)
-
-
-
-
 
 
 
