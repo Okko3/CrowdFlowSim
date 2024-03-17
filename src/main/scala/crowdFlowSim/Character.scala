@@ -49,6 +49,16 @@ class Character(var position: Vector2, room: Room):
      val timeSave = brakeAmount((evadePos), seekDoorDirection(evadePos).setMagnitude(this.velocity.magnitude)) > brakeAmount(this.position, this.velocity) + 1
      centreSpace && goingToCrash && timeSave
 
+
+  def shouldEvade2 =
+     val evadePos = this.position.add(evadeDirection).add(evadeDirection.multiply(45))
+     val centreSpace = this.position.y < this.room.heigth/2 -5 || this.position.y > this.room.heigth/2 + 5
+     val goingToCrash = this.room.isFree(evadePos)
+     val timeSave = brakeAmount((evadePos), seekDoorDirection(evadePos).setMagnitude(this.velocity.magnitude)) > brakeAmount(this.position, this.velocity) + 0.7
+     goingToCrash && timeSave
+
+
+
   def brakeAmount(position: Vector2, velocity: Vector2): Double =
     val brakingRange = 25 to 80
     val scalingFactor = 2.6/(80 - 25)

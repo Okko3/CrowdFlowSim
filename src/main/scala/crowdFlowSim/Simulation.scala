@@ -13,6 +13,9 @@ object Simulation:
   var simulationSpeed = 20
   val room: Room = readFile().get
   val characterCircleMap = collection.mutable.Map[Character, Circle]()
+  var going = true
+
+
 
   def readFile() =
     Using( Source.fromFile("data.txt") )( source =>
@@ -24,7 +27,8 @@ object Simulation:
 
   def runSimulation() =
     val runner = Future {
-      while (true) do
+
+      while going do
         tick()
         Thread.sleep(1000/simulationSpeed) }
 
@@ -60,10 +64,6 @@ object Simulation:
       }
     }
   }
-
-
-
-
 
 
 

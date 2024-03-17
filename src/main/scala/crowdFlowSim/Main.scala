@@ -1,6 +1,7 @@
 package crowdFlowSim
 
 import crowdFlowSim.Main.stage
+import javafx.scene.input.KeyCode
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.scene.layout.Pane
@@ -8,6 +9,9 @@ import scalafx.scene.paint.Color.*
 import scalafx.scene.shape.{Circle, Rectangle}
 import scalafx.Includes.jfxMouseEvent2sfx
 import scalafx.scene.input.InputIncludes.jfxMouseEvent2sfx
+import scalafx.scene.input.KeyCode.P
+import scalafx.scene.input.KeyEvent
+import scalafx.scene.input.KeyEvent.KeyPressed
 
 object Main extends JFXApp3:
 
@@ -105,6 +109,16 @@ object Main extends JFXApp3:
         Simulation.characterCircleMap.put(newCharacter, circle)
         root.children.add(circle)
       }
+
+    /*
+    root.onKeyPressed = (event: KeyEvent) => {
+      if event.code == P then Simulation.going = !Simulation.going
+
+    }
+    */
+
+
+
 
 
 

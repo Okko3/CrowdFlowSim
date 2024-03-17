@@ -10,17 +10,12 @@ class Room(val width: Int, val heigth: Int, val doorSize: Int, val characterCoun
   def isFree(point: Vector2) =
     if characters.isEmpty then true else
       characters.forall(character =>
-      point.distance(character.position) > character.radius * 2.2)
+      point.distance(character.position) > character.radius * 2.1)
   
   
   def createCharacters =
     var iterations = 0
     var addedCount = 0
-    
-    def isFree(point: Vector2) =
-      if characters.isEmpty then true else
-        characters.forall(character =>
-        point.distance(character.position) > character.radius * 2.05)
 
     while(10000 > iterations && characterCount > addedCount) do
       val randomPos = Vector2(Random.between(22, this.width - 22), Random.between(22, this.heigth -22 ))
