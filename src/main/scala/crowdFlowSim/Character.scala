@@ -51,22 +51,9 @@ class Character(var position: Vector2, room: Room):
      val goingToCrash = this.room.isFree(evadePos)
      val timeSave = brakeAmount((evadePos), seekDoorDirection(evadePos).setMagnitude(this.velocity.magnitude)) > brakeAmount(this.position, this.velocity) + 1
      centreSpace && goingToCrash && timeSave
- /*
-  def shouldEvade2 =
-    val evadeUp = this.position.add(evadeDirection).add(Vector2(0,-45))
-    val evadeDown = this.position.add(evadeDirection).add(Vector2(45,0))
-    val evadeRigth = this.position.add(evadeDirection).add(Vector2(0,45))
-    val best = List(
-      brakeAmount((evadeUp), seekDoorDirection(evadeUp).setMagnitude(this.velocity.magnitude)),
-      brakeAmount((evadeDown), seekDoorDirection(evadeDown).setMagnitude(this.velocity.magnitude)),
-      brakeAmount((evadeRigth), seekDoorDirection(evadeRigth).setMagnitude(this.velocity.magnitude))).min
-    if best > brakeAmount(this.position, this.velocity) then
-
-   */
-
 
   def shouldEvade3 =
-    val evadeDirs = List(Vector2(0,-6), Vector2(0,6))
+    val evadeDirs = List(Vector2(0,-3), Vector2(0,3))
     val best = mutable.Buffer[Double]()
     val freet = mutable.Buffer[Boolean]()
     evadeDirs.foreach(dir =>
@@ -78,18 +65,6 @@ class Character(var position: Vector2, room: Room):
     val index = best.zipWithIndex.maxBy(_._1)._2
     if best.max > brakeAmount(this.position, this.velocity) && freet(index) then evadeDirs(index)
     else Vector2(0, 0)
-
-
-
-
-  def shouldEvade2 =
-     val evadePos = this.position.add(evadeDirection).add(evadeDirection.multiply(45))
-     val centreSpace = this.position.y < this.room.heigth/2 -5 || this.position.y > this.room.heigth/2 + 5
-     val goingToCrash = this.room.isFree(evadePos)
-     val timeSave = brakeAmount((evadePos), seekDoorDirection(evadePos).setMagnitude(this.velocity.magnitude)) > brakeAmount(this.position, this.velocity) + 0.7
-     goingToCrash && timeSave
-
-
 
   def brakeAmount(position: Vector2, velocity: Vector2): Double =
     val brakingRange = 25 to 80 by 3

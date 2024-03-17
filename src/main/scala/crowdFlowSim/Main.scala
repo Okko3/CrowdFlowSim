@@ -111,6 +111,7 @@ object Main extends JFXApp3:
       }
 
     /*
+
     root.onKeyPressed = (event: KeyEvent) => {
       if event.code == P then Simulation.going = !Simulation.going
 

@@ -27,7 +27,7 @@ object Simulation:
 
   def runSimulation() =
     val runner = Future {
-
+      
       while going do
         tick()
         Thread.sleep(1000/simulationSpeed) }
