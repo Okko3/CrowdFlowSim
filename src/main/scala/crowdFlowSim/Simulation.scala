@@ -6,33 +6,36 @@ import scalafx.scene.paint.Color.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.*
 import scala.io.Source
-import scala.util.Using
 
 object Simulation:
 
   var simulationSpeed = 20
-  val room: Room = readFile().get
   val characterCircleMap = collection.mutable.Map[Character, Circle]()
-  var going = true
+  var room: Room = Room(0,0,0,0)
 
 
   // Lukee simulaation alkutiedot tekstitiedostosta.
-  
-  def readFile() =
-    Using( Source.fromFile("data.txt") )( source =>
-        val lines = source.getLines
-        val params = lines.toVector(0).split(",")
-        simulationSpeed = params(4).toInt
-        Room(params(0).toInt, params(1).toInt, params(2).toInt , params(3).toInt)
-    )
 
-  def runSimulation() =
+  def readFile() =
+  try
+    val source = Source.fromFile("data.txt")
+    val lines = source.getLines.toVector
+    source.close()
+    val params = lines(0).split(",")
+    simulationSpeed = params(4).toInt
+    room = Room(params(0).toInt, params(1).toInt, params(2).toInt, params(3).toInt)
+  catch
+    case e: Exception =>
+      println(s"Error reading file: ${e.getMessage}. Incorrect data")
+
+
+  def runSimulation(): Unit =
     val runner = Future {
-      while going do
+      while true do
         tick()
         Thread.sleep(1000/simulationSpeed) }
 
-  // Päivittää simulaatiota.
+  // Päivittää simulaatiota. Muuttaa hahmojen väriä sen perusteella missä tilassa ne ovat.
   def tick(): Unit =
     room.characters.foreach(character =>
       if !character.inRoom then
@@ -48,7 +51,7 @@ object Simulation:
         characterCircleMap(character).centerY = character.position.y + 40
     )
   /*
-  // Monisäikeinen funktio simulaation edistämiseen. Toimii vain muutamalla hahmolla ja silloinkin huonosti.
+  // Vaihtoehtoinen monisäikeinen funktio simulaation edistämiseen. Toimii vain muutamalla hahmolla ja silloinkin huonosti.
   def tick2(): Unit = {
     val groupedCharacters = room.characters.grouped((room.characters.length + 3) / 4).toList
 

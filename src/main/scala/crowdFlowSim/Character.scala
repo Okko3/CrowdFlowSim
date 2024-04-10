@@ -1,7 +1,6 @@
 package crowdFlowSim
 import scala.collection.mutable
 import scala.math.*
-import scala.util.boundary
 
 
 class Character(var position: Vector2, room: Room):
@@ -46,7 +45,8 @@ class Character(var position: Vector2, room: Room):
   val doorEndY: Double = room.heigth / 2 + room.doorSize / 2 - radius
 
 
-  //Funktion tarkoitus on estää liikkuminen huoneen ulkopuolelle
+  // Funktion tarkoitus on estää liikkuminen huoneen ulkopuolelle
+  
   def goingOutside() =
     val goingY = this.position.add(velocity.multiply(10)).y > this.room.heigth - this.radius - 5 || this.position.add(velocity.multiply(10)).y < this.radius + 5
     if goingY then
@@ -67,7 +67,7 @@ class Character(var position: Vector2, room: Room):
     else if position.y < doorStartY then position.getDirection(Vector2(room.width - radius, doorStartY))
     else position.getDirection(Vector2(room.width - radius, doorEndY))
 
-  //Laskee pitäisikö hahmon väistellä toisia
+  // Laskee pitäisikö hahmon väistellä toisia hahmoja tai esteitä. 
 
   def shouldEvade =
     val evadeDirs = List(Vector2(0,-40), Vector2(0,40), Vector2(15,0), Vector2(25,25), Vector2(25,-25))
@@ -83,7 +83,7 @@ class Character(var position: Vector2, room: Room):
     if best.max - 1.1 > brakeAmount(this.position, this.velocity) && freet(index) then evadeDirs(index)
     else Vector2(0, 0)
 
-  //Laskee pitäisikö jarruttaa ja jos pitäisi miten paljon.
+  // Laskee pitäisikö jarruttaa ja jos pitäisi miten paljon.
 
   def brakeAmount(position: Vector2, velocity: Vector2): Double =
     val brakingRange = 0 to 100 by 5
@@ -97,7 +97,7 @@ class Character(var position: Vector2, room: Room):
     multiplier
 
 
-  //Laskee onko tulevaisuudessa tapahtumassa törmäys
+  // Laskee onko tulevaisuudessa tapahtumassa törmäys
 
   def checkFuture(position: Vector2, velocity: Vector2, multi: Int) =
     var futurepos = position.add(velocity.multiply(multi))

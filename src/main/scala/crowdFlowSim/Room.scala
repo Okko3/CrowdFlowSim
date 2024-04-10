@@ -7,12 +7,14 @@ class Room(val width: Int, val heigth: Int, val doorSize: Int, val characterCoun
 
   val characters = Buffer[Character]()
 
+  
+  
   def isFree(point: Vector2) =
     if characters.isEmpty then true else
       characters.forall(character =>
       point.distance(character.position) > character.radius * 2.1)
   
-  //Luo hahmot ja asettelee ne satunnaisesti paikoilleen.
+  // Luo hahmot ja asettelee ne satunnaisesti paikoilleen.
   def createCharacters =
     var iterations = 0
     var addedCount = 0

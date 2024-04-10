@@ -13,7 +13,7 @@ import scalafx.scene.input.InputIncludes.jfxMouseEvent2sfx
 import scalafx.scene.input.KeyCode.P
 import scalafx.scene.input.KeyEvent
 import scalafx.scene.input.KeyEvent.KeyPressed
-import scalafx.Includes.eventClosureWrapperWithParam 
+import scalafx.Includes.eventClosureWrapperWithParam
 import scalafx.event.ActionEvent
 
 
@@ -23,8 +23,8 @@ object Main extends JFXApp3:
   val wallwidth = 40
 
   def start() =
-    
-    //Luodaan kartta. 
+
+    Simulation.readFile()
 
     stage = new JFXApp3.PrimaryStage:
       title = "CrowdFlowSim"
@@ -74,9 +74,9 @@ object Main extends JFXApp3:
 
     root.children ++= Seq(leftWall, topWall, bottomWall, door, rightWallTop, rightWallBottom)
 
-    
+
     // Luodaan hahmot
-    
+
     Simulation.room.createCharacters
 
     Simulation.room.characters.foreach(character =>
