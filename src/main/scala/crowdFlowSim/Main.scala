@@ -50,7 +50,7 @@ object Main extends JFXApp3:
       y = (stage.height.value) / 2 - Simulation.room.doorSize/2
       width = wallwidth
       height = Simulation.room.doorSize
-      fill = Yellow
+      fill = SandyBrown
 
     val rightWallTop = new Rectangle:
       x = stage.width.value - wallwidth
@@ -74,7 +74,7 @@ object Main extends JFXApp3:
       circle.centerX  = character.position.x + wallwidth
       circle.centerY = character.position.y + wallwidth
       circle.radius = character.radius
-      circle.fill = Blue
+      circle.fill = DarkOliveGreen
       Simulation.characterCircleMap.put(character, circle)
       root.children.add(circle)
     )
@@ -109,6 +109,7 @@ object Main extends JFXApp3:
         Simulation.characterCircleMap.put(newCharacter, circle)
         root.children.add(circle)
       }
+
 
     /*
 
