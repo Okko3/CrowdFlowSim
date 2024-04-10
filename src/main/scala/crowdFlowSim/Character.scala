@@ -2,7 +2,7 @@ package crowdFlowSim
 import scala.collection.mutable
 import scala.math.*
 import scala.util.boundary
-import scala.util.boundary.break
+
 
 class Character(var position: Vector2, room: Room):
   var radius = 20
@@ -16,9 +16,9 @@ class Character(var position: Vector2, room: Room):
   var braking = false
 
   def update =
+    this.updatePosition()
     this.updateAcceleration()
     this.updateVelocity()
-    this.updatePosition()
     if this.position.x > this.room.width + radius then
       isObstacle = true
       inRoom = false
@@ -42,13 +42,17 @@ class Character(var position: Vector2, room: Room):
         acceleration = seekDoorDirection(this.position).setMagnitude(maxAcceleration).multiply(brakeAmount(this.position, this.velocity))
 
 
+  val doorStartY: Double = room.heigth / 2 - room.doorSize / 2 + radius
+  val doorEndY: Double = room.heigth / 2 + room.doorSize / 2 - radius
+
+
+  //Funktion tarkoitus on estää liikkuminen huoneen ulkopuolelle
   def goingOutside() =
-    //Funktion tarkoitus on estää liikkuminen huoneen ulkopuolelle
     val goingY = this.position.add(velocity.multiply(10)).y > this.room.heigth - this.radius - 5 || this.position.add(velocity.multiply(10)).y < this.radius + 5
     if goingY then
       if this.position.y > this.room.heigth/2 then this.acceleration = Vector2(0, -0.35)
       else this.acceleration = Vector2(0, 0.35)
-    val goingXover = this.position.add(velocity.multiply(20)).x > this.room.width - this.radius - 5 && (this.position.add(velocity.multiply(20)).y < (this.room.heigth/2 - this.room.doorSize + radius + 5) || this.position.add(velocity.multiply(20)).y > (this.room.heigth/2 + this.room.doorSize - radius - 5))
+    val goingXover = this.position.add(velocity.multiply(20)).x > this.room.width - this.radius - 5 && (this.position.add(velocity.multiply(20)).y < doorStartY || this.position.add(velocity.multiply(20)).y > doorEndY)
     if goingXover then this.acceleration = Vector2(-0.35, 0)
     val goingXunder = this.position.add(velocity.multiply(15)).x < this.radius + 5
     if goingXunder then this.acceleration  = Vector2(0.35, 0)
@@ -58,26 +62,28 @@ class Character(var position: Vector2, room: Room):
 
 
   def seekDoorDirection(position: Vector2): Vector2 =
-    val doorStartY: Double = room.heigth / 2 - room.doorSize / 2 + radius
-    val doorEndY: Double = room.heigth / 2 + room.doorSize / 2 - radius
 
     if position.y > doorStartY && position.y < doorEndY then position.getDirection(Vector2(room.width + radius, position.y))
     else if position.y < doorStartY then position.getDirection(Vector2(room.width - radius, doorStartY))
     else position.getDirection(Vector2(room.width - radius, doorEndY))
 
+  //Laskee pitäisikö hahmon väistellä toisia
+
   def shouldEvade =
-    val evadeDirs = List(Vector2(0,-40), Vector2(0,40), Vector2(40,0), Vector2(25,25), Vector2(25,-25))
+    val evadeDirs = List(Vector2(0,-40), Vector2(0,40), Vector2(15,0), Vector2(25,25), Vector2(25,-25))
     val best = mutable.Buffer[Double]()
     val freet = mutable.Buffer[Boolean]()
     evadeDirs.foreach(dir =>
       var evadePos = this.position.add(dir)
       best += brakeAmount((evadePos), seekDoorDirection(evadePos).setMagnitude(this.velocity.magnitude))
       freet += !this.room.characters.exists(other =>
-        other != this && other.position.distance(evadePos) < this.radius + other.radius)
+        other != this && other.position.distance(evadePos) < this.radius + other.radius) && evadePos.x < this.room.width - this.radius - 5
       )
     val index = best.zipWithIndex.maxBy(_._1)._2
     if best.max - 1.1 > brakeAmount(this.position, this.velocity) && freet(index) then evadeDirs(index)
     else Vector2(0, 0)
+
+  //Laskee pitäisikö jarruttaa ja jos pitäisi miten paljon.
 
   def brakeAmount(position: Vector2, velocity: Vector2): Double =
     val brakingRange = 0 to 100 by 5
@@ -90,6 +96,8 @@ class Character(var position: Vector2, room: Room):
     braking = false
     multiplier
 
+
+  //Laskee onko tulevaisuudessa tapahtumassa törmäys
 
   def checkFuture(position: Vector2, velocity: Vector2, multi: Int) =
     var futurepos = position.add(velocity.multiply(multi))

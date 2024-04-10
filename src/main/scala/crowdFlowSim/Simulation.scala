@@ -16,7 +16,8 @@ object Simulation:
   var going = true
 
 
-
+  // Lukee simulaation alkutiedot tekstitiedostosta.
+  
   def readFile() =
     Using( Source.fromFile("data.txt") )( source =>
         val lines = source.getLines
@@ -27,11 +28,11 @@ object Simulation:
 
   def runSimulation() =
     val runner = Future {
-      
       while going do
         tick()
         Thread.sleep(1000/simulationSpeed) }
 
+  // Päivittää simulaatiota.
   def tick(): Unit =
     room.characters.foreach(character =>
       if !character.inRoom then
@@ -46,16 +47,9 @@ object Simulation:
         characterCircleMap(character).centerX = character.position.x + 40
         characterCircleMap(character).centerY = character.position.y + 40
     )
-
-  def tick2(): Unit =
-    val futures = room.characters.map( character =>
-      val characterFuture = Future {
-        character.update
-        characterCircleMap(character).centerX = character.position.x + 40
-        characterCircleMap(character).centerY = character.position.y + 40
-      } )
-
-  def tick3(): Unit = {
+  /*
+  // Monisäikeinen funktio simulaation edistämiseen. Toimii vain muutamalla hahmolla ja silloinkin huonosti.
+  def tick2(): Unit = {
     val groupedCharacters = room.characters.grouped((room.characters.length + 3) / 4).toList
 
     val futures = groupedCharacters.map { group =>
@@ -67,7 +61,7 @@ object Simulation:
         }
       }
     }
-  }
+  */
 
 
 
