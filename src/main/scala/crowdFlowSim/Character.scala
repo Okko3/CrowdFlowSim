@@ -6,13 +6,18 @@ import scala.math.*
 class Character(var position: Vector2, room: Room):
   var radius = 20
   var isObstacle = false
-  var inRoom: Boolean = true
+  var inRoom = true
   var velocity: Vector2 = Vector2(0,0)
   var acceleration: Vector2 = Vector2(0,0)
   val maxVelocity: Double = 2
   val maxAcceleration: Double = 0.35
   var evading = false
   var braking = false
+
+  // Missä ovi alkaa, kun ottaa huomioon hahmon säteen.
+
+  val doorStartY: Double = room.heigth / 2 - room.doorSize / 2 + radius
+  val doorEndY: Double = room.heigth / 2 + room.doorSize / 2 - radius
 
   def update =
     this.updatePosition()
@@ -26,7 +31,7 @@ class Character(var position: Vector2, room: Room):
   def updatePosition() = position = position.add(velocity)
 
   def updateVelocity() =
-    if this.acceleration.dotProduct(seekDoorDirection(this.position)) < 0 && velocity.magnitude.abs < 0.5 then velocity = Vector2(0,0)
+    //if this.acceleration.dotProduct(seekDoorDirection(this.position)) < 0 && velocity.magnitude.abs < 0.4 then velocity = Vector2(0,0)
     if velocity.angleWith(acceleration).abs > 0.02 then velocity = velocity.add(acceleration).setMagnitude(maxVelocity * 0.5)
     else if velocity.magnitude < maxVelocity then velocity = velocity.add(acceleration).setMagnitude(maxVelocity)
 
@@ -41,12 +46,8 @@ class Character(var position: Vector2, room: Room):
         acceleration = seekDoorDirection(this.position).setMagnitude(maxAcceleration).multiply(brakeAmount(this.position, this.velocity))
 
 
-  val doorStartY: Double = room.heigth / 2 - room.doorSize / 2 + radius
-  val doorEndY: Double = room.heigth / 2 + room.doorSize / 2 - radius
-
-
   // Funktion tarkoitus on estää liikkuminen huoneen ulkopuolelle
-  
+
   def goingOutside() =
     val goingY = this.position.add(velocity.multiply(10)).y > this.room.heigth - this.radius - 5 || this.position.add(velocity.multiply(10)).y < this.radius + 5
     if goingY then
@@ -59,7 +60,7 @@ class Character(var position: Vector2, room: Room):
 
     goingY || goingXover || goingXunder
 
-
+  // mihin suuntaan liikkumalla pääsee nopeitin ovesta ulos.
 
   def seekDoorDirection(position: Vector2): Vector2 =
 
@@ -67,20 +68,20 @@ class Character(var position: Vector2, room: Room):
     else if position.y < doorStartY then position.getDirection(Vector2(room.width - radius, doorStartY))
     else position.getDirection(Vector2(room.width - radius, doorEndY))
 
-  // Laskee pitäisikö hahmon väistellä toisia hahmoja tai esteitä. 
+  // Laskee pitäisikö hahmon väistellä toisia hahmoja tai esteitä ja jos pitäisi mihin suuntaan.
 
   def shouldEvade =
     val evadeDirs = List(Vector2(0,-40), Vector2(0,40), Vector2(15,0), Vector2(25,25), Vector2(25,-25))
-    val best = mutable.Buffer[Double]()
-    val freet = mutable.Buffer[Boolean]()
+    val spaceAvaible = mutable.Buffer[Double]()
+    val isFree = mutable.Buffer[Boolean]()
     evadeDirs.foreach(dir =>
       var evadePos = this.position.add(dir)
-      best += brakeAmount((evadePos), seekDoorDirection(evadePos).setMagnitude(this.velocity.magnitude))
-      freet += !this.room.characters.exists(other =>
+      spaceAvaible += brakeAmount((evadePos), seekDoorDirection(evadePos).setMagnitude(this.velocity.magnitude))
+      isFree += !this.room.characters.exists(other =>
         other != this && other.position.distance(evadePos) < this.radius + other.radius) && evadePos.x < this.room.width - this.radius - 5
       )
-    val index = best.zipWithIndex.maxBy(_._1)._2
-    if best.max - 1.1 > brakeAmount(this.position, this.velocity) && freet(index) then evadeDirs(index)
+    val index = spaceAvaible.zipWithIndex.maxBy(_._1)._2
+    if spaceAvaible.max - 1.1 > brakeAmount(this.position, this.velocity) && isFree(index) then evadeDirs(index)
     else Vector2(0, 0)
 
   // Laskee pitäisikö jarruttaa ja jos pitäisi miten paljon.
