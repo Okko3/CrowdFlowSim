@@ -1,20 +1,14 @@
 package crowdFlowSim
 
 import crowdFlowSim.Main.stage
-import javafx.scene.input.KeyCode
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.scene.layout.Pane
 import scalafx.scene.paint.Color.*
 import scalafx.scene.shape.{Circle, Rectangle}
-import scalafx.Includes.jfxMouseEvent2sfx
-import scalafx.scene.control.Button
 import scalafx.scene.input.InputIncludes.jfxMouseEvent2sfx
-import scalafx.scene.input.KeyCode.P
-import scalafx.scene.input.KeyEvent
-import scalafx.scene.input.KeyEvent.KeyPressed
-import scalafx.Includes.eventClosureWrapperWithParam
-import scalafx.event.ActionEvent
+
+
 
 
 
@@ -74,10 +68,9 @@ object Main extends JFXApp3:
 
     root.children ++= Seq(leftWall, topWall, bottomWall, door, rightWallTop, rightWallBottom)
 
-
     // Luodaan hahmot
 
-    Simulation.room.createCharacters
+    Simulation.room.createCharacters()
 
     Simulation.room.characters.foreach(character =>
       val circle = new Circle
@@ -101,9 +94,9 @@ object Main extends JFXApp3:
           radius = newCharacter.radius
           fill = Red
         }
-        Simulation.room.characters += newCharacter
         Simulation.characterCircleMap.put(newCharacter, circle)
         root.children.add(circle)
+        Simulation.room.characters += newCharacter
       }
       if (event.button == MouseButton.SECONDARY) then
         val newCharacter = new Character(Vector2(event.x - wallwidth, event.y - wallwidth), Simulation.room)
@@ -115,9 +108,9 @@ object Main extends JFXApp3:
           radius = newCharacter.radius
           fill = Grey
         }
-        Simulation.room.characters += newCharacter
         Simulation.characterCircleMap.put(newCharacter, circle)
         root.children.add(circle)
+        Simulation.room.characters += newCharacter
       }
 
 

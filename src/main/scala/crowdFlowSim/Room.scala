@@ -9,13 +9,13 @@ class Room(val width: Int, val heigth: Int, val doorSize: Int, val characterCoun
 
   
   
-  def isFree(point: Vector2) =
+  def isFree(point: Vector2): Boolean =
     if characters.isEmpty then true else
       characters.forall(character =>
       point.distance(character.position) > character.radius * 2.1)
   
   // Luo hahmot ja asettelee ne satunnaisesti paikoilleen.
-  def createCharacters =
+  def createCharacters() =
     var iterations = 0
     var addedCount = 0
 

@@ -17,16 +17,16 @@ object Simulation:
   // Lukee simulaation alkutiedot tekstitiedostosta.
 
   def readFile() =
-  try
-    val source = Source.fromFile("data.txt")
-    val lines = source.getLines.toVector
-    source.close()
-    val params = lines(0).split(",")
-    simulationSpeed = params(4).toInt
-    room = Room(params(0).toInt, params(1).toInt, params(2).toInt, params(3).toInt)
-  catch
-    case e: Exception =>
-      println(s"Error reading file: ${e.getMessage}. Incorrect data")
+    try
+      val source = Source.fromFile("data.txt")
+      val lines = source.getLines.toVector
+      source.close()
+      val params = lines(0).replaceAll("\\s+", "").split(",")
+      simulationSpeed = params(4).toInt
+      room = Room(params(0).toInt, params(1).toInt, params(2).toInt, params(3).toInt)
+    catch
+      case e: Exception =>
+        println(s"Error reading file: ${e.getMessage}. Incorrect data")
 
 
   def runSimulation(): Unit =

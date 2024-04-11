@@ -4,7 +4,7 @@ import scala.math.*
 
 
 class Character(var position: Vector2, room: Room):
-  var radius = 20
+  var radius = 40
   var isObstacle = false
   var inRoom = true
   var velocity: Vector2 = Vector2(0,0)
@@ -31,7 +31,7 @@ class Character(var position: Vector2, room: Room):
   def updatePosition() = position = position.add(velocity)
 
   def updateVelocity() =
-    //if this.acceleration.dotProduct(seekDoorDirection(this.position)) < 0 && velocity.magnitude.abs < 0.4 then velocity = Vector2(0,0)
+    if this.acceleration.dotProduct(seekDoorDirection(this.position)) < 0 && velocity.magnitude.abs < 0.4 then velocity = Vector2(0,0)
     if velocity.angleWith(acceleration).abs > 0.02 then velocity = velocity.add(acceleration).setMagnitude(maxVelocity * 0.5)
     else if velocity.magnitude < maxVelocity then velocity = velocity.add(acceleration).setMagnitude(maxVelocity)
 
@@ -81,7 +81,7 @@ class Character(var position: Vector2, room: Room):
         other != this && other.position.distance(evadePos) < this.radius + other.radius) && evadePos.x < this.room.width - this.radius - 5
       )
     val index = spaceAvaible.zipWithIndex.maxBy(_._1)._2
-    if spaceAvaible.max - 1.1 > brakeAmount(this.position, this.velocity) && isFree(index) then evadeDirs(index)
+    if spaceAvaible.max - 0.7 > brakeAmount(this.position, this.velocity) && isFree(index) then evadeDirs(index)
     else Vector2(0, 0)
 
   // Laskee pitäisikö jarruttaa ja jos pitäisi miten paljon.
@@ -100,12 +100,12 @@ class Character(var position: Vector2, room: Room):
 
   // Laskee onko tulevaisuudessa tapahtumassa törmäys
 
-  def checkFuture(position: Vector2, velocity: Vector2, multi: Int) =
+  def checkFuture(position: Vector2, velocity: Vector2, multi: Int): Boolean =
     var futurepos = position.add(velocity.multiply(multi))
     this.room.characters.exists(other =>
       val otherfuturepos = other.position.add(other.velocity.multiply(multi))
       val insame = other != this && otherfuturepos.distance(futurepos) < this.radius + other.radius + 7
-      val priority = position.distance(Vector2(room.width + radius, room.heigth/2)) * 0.98 > other.position.distance(Vector2(room.width + radius, room.heigth/2))
+      val priority = position.distance(Vector2(room.width + radius, room.heigth/2)) * 0.999 > other.position.distance(Vector2(room.width + radius, room.heigth/2))
 
       priority && insame
     )

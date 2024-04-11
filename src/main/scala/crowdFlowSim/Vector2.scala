@@ -6,16 +6,16 @@ import scala.math.*
 
 class Vector2(var x: Double, var y: Double):
 
-  def add(other: Vector2) = Vector2(x + other.x, y + other.y)
+  def add(other: Vector2): Vector2 = Vector2(x + other.x, y + other.y)
 
   def multiply(c: Double): Vector2 =
     Vector2(x * c, y * c)
 
   def magnitude: Double = sqrt(x * x + y * y)
 
-  def getDirection(destination: Vector2) = Vector2(destination.x - x, destination.y - y)
+  def getDirection(destination: Vector2): Vector2 = Vector2(destination.x - x, destination.y - y)
 
-  def distance(destination: Vector2) = this.getDirection(destination).magnitude
+  def distance(destination: Vector2): Double = this.getDirection(destination).magnitude
 
   def dotProduct(other: Vector2): Double = this.x * other.x + this.y * other.y
 
