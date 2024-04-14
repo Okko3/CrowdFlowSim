@@ -4,7 +4,8 @@ import scala.math.*
 
 
 class Character(var position: Vector2, room: Room):
-  var radius = 40
+
+  var radius = 20
   var isObstacle = false
   var inRoom = true
   var velocity: Vector2 = Vector2(0,0)

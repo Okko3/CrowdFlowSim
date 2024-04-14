@@ -8,7 +8,6 @@ class Room(val width: Int, val heigth: Int, val doorSize: Int, val characterCoun
   val characters = Buffer[Character]()
 
   
-  
   def isFree(point: Vector2): Boolean =
     if characters.isEmpty then true else
       characters.forall(character =>
