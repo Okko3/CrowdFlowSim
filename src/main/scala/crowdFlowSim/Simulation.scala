@@ -14,7 +14,7 @@ object Simulation:
   var room: Room = Room(0,0,0,0)
 
 
-  // Lukee simulaation alkutiedot tekstitiedostosta.
+  // Reads the initial data for the simulation from a text file.
 
   def readFile() =
     try
@@ -35,7 +35,7 @@ object Simulation:
         tick()
         Thread.sleep(1000/simulationSpeed) }
 
-  // Päivittää simulaatiota. Muuttaa hahmojen väriä sen perusteella missä tilassa ne ovat.
+  // Updates the simulation. Changes the color of the characters based on their state.
   def tick(): Unit =
     room.characters.foreach(character =>
       if !character.inRoom then
@@ -50,31 +50,3 @@ object Simulation:
         characterCircleMap(character).centerX = character.position.x + 40
         characterCircleMap(character).centerY = character.position.y + 40
     )
-  /*
-  // Vaihtoehtoinen monisäikeinen funktio simulaation edistämiseen. Toimii vain muutamalla hahmolla ja silloinkin huonosti.
-  def tick2(): Unit = {
-    val groupedCharacters = room.characters.grouped((room.characters.length + 3) / 4).toList
-
-    val futures = groupedCharacters.map { group =>
-      Future {
-        group.foreach { character =>
-          character.update
-          characterCircleMap(character).centerX = character.position.x + 40
-          characterCircleMap(character).centerY = character.position.y + 40
-        }
-      }
-    }
-  */
-
-
-
-
-
-
-
-
-
-
-
-
-

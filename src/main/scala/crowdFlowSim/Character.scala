@@ -15,7 +15,7 @@ class Character(var position: Vector2, room: Room):
   var evading = false
   var braking = false
 
-  // Missä ovi alkaa, kun ottaa huomioon hahmon säteen.
+  // Where the door starts, considering the character's radius.
 
   val doorStartY: Double = room.heigth / 2 - room.doorSize / 2 + radius
   val doorEndY: Double = room.heigth / 2 + room.doorSize / 2 - radius
@@ -47,7 +47,7 @@ class Character(var position: Vector2, room: Room):
         acceleration = seekDoorDirection(this.position).setMagnitude(maxAcceleration).multiply(brakeAmount(this.position, this.velocity))
 
 
-  // Funktion tarkoitus on estää liikkuminen huoneen ulkopuolelle
+  // The purpose of the function is to prevent movement outside the room.
 
   def goingOutside() =
     val goingY = this.position.add(velocity.multiply(10)).y > this.room.heigth - this.radius - 5 || this.position.add(velocity.multiply(10)).y < this.radius + 5
@@ -61,7 +61,7 @@ class Character(var position: Vector2, room: Room):
 
     goingY || goingXover || goingXunder
 
-  // mihin suuntaan liikkumalla pääsee nopeitin ovesta ulos.
+  // In which direction should one move to get out of the door the fastest.
 
   def seekDoorDirection(position: Vector2): Vector2 =
 
@@ -69,7 +69,7 @@ class Character(var position: Vector2, room: Room):
     else if position.y < doorStartY then position.getDirection(Vector2(room.width - radius, doorStartY))
     else position.getDirection(Vector2(room.width - radius, doorEndY))
 
-  // Laskee pitäisikö hahmon väistellä toisia hahmoja tai esteitä ja jos pitäisi mihin suuntaan.
+  // Calculates whether the character should evade other characters or obstacles, and if so, in which direction.
 
   def shouldEvade =
     val evadeDirs = List(Vector2(0,-40), Vector2(0,40), Vector2(15,0), Vector2(25,25), Vector2(25,-25))
@@ -85,7 +85,8 @@ class Character(var position: Vector2, room: Room):
     if spaceAvaible.max - 0.7 > brakeAmount(this.position, this.velocity) && isFree(index) then evadeDirs(index)
     else Vector2(0, 0)
 
-  // Laskee pitäisikö jarruttaa ja jos pitäisi miten paljon.
+  // Calculates whether the character should brake, and if so, by how much.
+
 
   def brakeAmount(position: Vector2, velocity: Vector2): Double =
     val brakingRange = 0 to 100 by 5
@@ -99,7 +100,7 @@ class Character(var position: Vector2, room: Room):
     multiplier
 
 
-  // Laskee onko tulevaisuudessa tapahtumassa törmäys
+  // Calculates if a collision is going to happen in the future.
 
   def checkFuture(position: Vector2, velocity: Vector2, multi: Int): Boolean =
     var futurepos = position.add(velocity.multiply(multi))

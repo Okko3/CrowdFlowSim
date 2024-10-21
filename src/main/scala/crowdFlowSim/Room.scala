@@ -13,7 +13,7 @@ class Room(val width: Int, val heigth: Int, val doorSize: Int, val characterCoun
       characters.forall(character =>
       point.distance(character.position) > character.radius * 2.1)
   
-  // Luo hahmot ja asettelee ne satunnaisesti paikoilleen.
+  //Create the characters and place them randomly
   def createCharacters() =
     var iterations = 0
     var addedCount = 0
